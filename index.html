@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ליגת הפאדל באר שבע</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ====== NAVBAR ====== -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">ליגת הפאדל ב״ש</div>
+      <div class="nav-links">
+        <a href="index.html" class="active">בית</a>
+        <a href="about.html">אודות</a>
+        <a href="league-standings.html">דירוג ליגה</a>
+        <a href="rankings.html">דירוג סבב</a>
+        <a href="rules.html">תקנון</a>
+        <a href="register.html">הרשמה</a>
+      </div>
+      <button class="menu-toggle" aria-label="תפריט">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ====== HERO ====== -->
+  <section class="hero">
+    <div class="hero-tag">עונה חדשה מתחילה</div>
+    <h1>ליגת <span>הפאדל</span><br>באר שבע</h1>
+    <p class="hero-sub">הליגה המובילה בדרום — תחרות, קהילה והתפתחות בכל משחק</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="number counter" data-target="120">0</div>
+        <div class="label">שחקנים</div>
+      </div>
+      <div class="hero-stat">
+        <div class="number counter" data-target="8">0</div>
+        <div class="label">ליגות</div>
+      </div>
+      <div class="hero-stat">
+        <div class="number counter" data-target="4">0</div>
+        <div class="label">דרגות</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ====== LIVE BROADCAST ====== -->
+  <section class="broadcast-section">
+    <div class="container">
+      <div class="broadcast-wrapper">
+
+        <div class="broadcast-header reveal">
+          <div class="live-badge offline" id="liveBadge">
+            <span class="dot"></span>
+            <span>LIVE</span>
+          </div>
+          <h2>שידור חי</h2>
+        </div>
+
+        <!-- Video -->
+        <div class="video-container reveal">
+          <div class="video-aspect" id="videoWrapper">
+            <div class="video-placeholder" id="videoPlaceholder">
+              <div class="icon">▶</div>
+              <p>המשחק הבא בקרוב...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scoreboard -->
+        <div class="scoreboard reveal" id="scoreboard" style="display:none;">
+          <div class="score-header">
+            <div></div>
+            <div>קבוצה</div>
+            <div>סטים קודמים</div>
+            <div>סטים</div>
+            <div>גיימים</div>
+            <div>נק׳</div>
+          </div>
+
+          <div class="team-row" id="rowA">
+            <div class="serve-cell"><div class="serve-dot"></div></div>
+            <div class="team-info">
+              <div class="team-name" id="teamAName">—</div>
+              <div class="players" id="playersA"></div>
+            </div>
+            <div class="set-history" id="setHistoryA"></div>
+            <div class="score-val" id="setsA">0</div>
+            <div class="score-val" id="scoreA">0</div>
+            <div class="score-val pts" id="pointsA">0</div>
+          </div>
+
+          <div class="team-row" id="rowB">
+            <div class="serve-cell"><div class="serve-dot"></div></div>
+            <div class="team-info">
+              <div class="team-name" id="teamBName">—</div>
+              <div class="players" id="playersB"></div>
+            </div>
+            <div class="set-history" id="setHistoryB"></div>
+            <div class="score-val" id="setsB">0</div>
+            <div class="score-val" id="scoreB">0</div>
+            <div class="score-val pts" id="pointsB">0</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ====== SPONSORS ====== -->
+  <section class="sponsors-section">
+    <div class="sponsors-track" id="sponsorsTrack">
+      <div class="sponsor-placeholder">ספונסר 1</div>
+      <div class="sponsor-placeholder">ספונסר 2</div>
+      <div class="sponsor-placeholder">ספונסר 3</div>
+      <div class="sponsor-placeholder">ספונסר 4</div>
+      <div class="sponsor-placeholder">ספונסר 5</div>
+      <div class="sponsor-placeholder">ספונסר 6</div>
+      <!-- Duplicated for seamless marquee -->
+      <div class="sponsor-placeholder">ספונסר 1</div>
+      <div class="sponsor-placeholder">ספונסר 2</div>
+      <div class="sponsor-placeholder">ספונסר 3</div>
+      <div class="sponsor-placeholder">ספונסר 4</div>
+      <div class="sponsor-placeholder">ספונסר 5</div>
+      <div class="sponsor-placeholder">ספונסר 6</div>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">ליגת הפאדל ב״ש</div>
+          <p class="footer-desc">הליגה המובילה בדרום. תחרות ברמה גבוהה, קהילה חזקה והזדמנות להתפתח בכל משחק.</p>
+        </div>
+        <div class="footer-links">
+          <h4>ניווט מהיר</h4>
+          <a href="index.html">בית</a>
+          <a href="about.html">אודות</a>
+          <a href="league-standings.html">דירוג ליגה</a>
+          <a href="rankings.html">דירוג סבב</a>
+          <a href="rules.html">תקנון</a>
+          <a href="register.html">הרשמה</a>
+        </div>
+        <div class="footer-links">
+          <h4>עקבו אחרינו</h4>
+          <div class="footer-social">
+            <a href="#" aria-label="אינסטגרם">📷</a>
+            <a href="#" aria-label="וואטסאפ">💬</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        © 2026 ליגת הפאדל באר שבע. כל הזכויות שמורות.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/scoreboard.js"></script>
+</body>
+</html>

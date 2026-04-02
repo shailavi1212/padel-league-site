@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>דירוג ליגה — ליגת הפאדל באר שבע</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">ליגת הפאדל ב״ש</div>
+      <div class="nav-links">
+        <a href="index.html">בית</a>
+        <a href="about.html">אודות</a>
+        <a href="league-standings.html" class="active">דירוג ליגה</a>
+        <a href="rankings.html">דירוג סבב</a>
+        <a href="rules.html">תקנון</a>
+        <a href="register.html">הרשמה</a>
+      </div>
+      <button class="menu-toggle" aria-label="תפריט">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <div class="section-tag">טבלאות</div>
+      <h1 class="section-title">דירוג <span>הליגה</span></h1>
+      <p class="section-sub" style="margin:0 auto;">טבלאות הדירוג המעודכנות של כל קבוצה בליגה.</p>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- STANDINGS -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Group Tabs -->
+      <div class="tabs" id="standingsTabs">
+        <button class="tab-btn active" data-group="A">קבוצה A</button>
+        <button class="tab-btn" data-group="B">קבוצה B</button>
+        <button class="tab-btn" data-group="C">קבוצה C</button>
+      </div>
+
+      <!-- Table -->
+      <div class="glass-panel">
+        <table class="standings-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>זוג</th>
+              <th>מש׳</th>
+              <th>נצ׳</th>
+              <th>S+</th>
+              <th>S-</th>
+              <th>SD</th>
+              <th>G+</th>
+              <th>G-</th>
+              <th>GD</th>
+            </tr>
+          </thead>
+          <tbody id="standingsBody">
+            <!-- Loading skeletons -->
+            <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+            <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+            <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+            <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+            <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Schedule Section -->
+      <div style="margin-top:64px;">
+        <div class="section-tag">לוח משחקים</div>
+        <h2 class="section-title" style="margin-bottom:24px;">תוצאות <span>ומשחקים</span></h2>
+
+        <!-- Fixture Tabs -->
+        <div class="tabs" id="fixtureTabs">
+          <button class="tab-btn active" data-tab="1">מחזור 1</button>
+          <button class="tab-btn" data-tab="2">מחזור 2</button>
+          <button class="tab-btn" data-tab="3">מחזור 3</button>
+          <button class="tab-btn" data-tab="4">מחזור 4</button>
+          <button class="tab-btn" data-tab="5">מחזור 5</button>
+          <button class="tab-btn" data-tab="6">מחזור 6</button>
+          <button class="tab-btn" data-tab="7">מחזור 7</button>
+        </div>
+
+        <div class="glass-panel" id="fixturePanel">
+          <!-- Loading -->
+          <div style="padding:24px;">
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+            <div class="skeleton skeleton-row"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">ליגת הפאדל ב״ש</div>
+          <p class="footer-desc">הליגה המובילה בדרום. תחרות ברמה גבוהה, קהילה חזקה והזדמנות להתפתח בכל משחק.</p>
+        </div>
+        <div class="footer-links">
+          <h4>ניווט מהיר</h4>
+          <a href="index.html">בית</a>
+          <a href="about.html">אודות</a>
+          <a href="league-standings.html">דירוג ליגה</a>
+          <a href="rankings.html">דירוג סבב</a>
+          <a href="rules.html">תקנון</a>
+          <a href="register.html">הרשמה</a>
+        </div>
+        <div class="footer-links">
+          <h4>עקבו אחרינו</h4>
+          <div class="footer-social">
+            <a href="#" aria-label="אינסטגרם">📷</a>
+            <a href="#" aria-label="וואטסאפ">💬</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 ליגת הפאדל באר שבע. כל הזכויות שמורות.</div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/standings.js"></script>
+</body>
+</html>

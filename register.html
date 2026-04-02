@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הרשמה — ליגת הפאדל באר שבע</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">ליגת הפאדל ב״ש</div>
+      <div class="nav-links">
+        <a href="index.html">בית</a>
+        <a href="about.html">אודות</a>
+        <a href="league-standings.html">דירוג ליגה</a>
+        <a href="rankings.html">דירוג סבב</a>
+        <a href="rules.html">תקנון</a>
+        <a href="register.html" class="active">הרשמה</a>
+      </div>
+      <button class="menu-toggle" aria-label="תפריט">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <div class="section-tag">הצטרפו אלינו</div>
+      <h1 class="section-title">הרשמה <span>לליגה</span></h1>
+      <p class="section-sub" style="margin:0 auto;">הליגה פתוחה לכל רמה — מתחילים ועד אליטה. הדרגה תקבע לפי הדירוג שלכם.</p>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- REGISTRATION -->
+  <section class="section">
+    <div class="container">
+
+      <!-- Steps -->
+      <div class="goals-grid reveal" style="margin-bottom:64px;">
+        <div class="goal-card">
+          <div class="icon">1️⃣</div>
+          <h3>מלאו את הטופס</h3>
+          <p>פרטים אישיים, ניסיון, וזמינות למשחקים.</p>
+        </div>
+        <div class="goal-card">
+          <div class="icon">2️⃣</div>
+          <h3>שיבוץ לדרגה</h3>
+          <p>על בסיס הניסיון והדירוג שלכם — תשובצו לדרגה המתאימה.</p>
+        </div>
+        <div class="goal-card">
+          <div class="icon">3️⃣</div>
+          <h3>מתחילים לשחק!</h3>
+          <p>תקבלו לוח משחקים ותתחילו את העונה.</p>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="glass-panel" style="padding:48px; max-width:560px; margin:0 auto;">
+        <h3 style="font-size:20px; font-weight:700; color:var(--text-bright); margin-bottom:32px; text-align:center;">טופס הרשמה</h3>
+
+        <form class="register-form" id="registerForm">
+          <div class="form-group">
+            <label>שם מלא</label>
+            <input type="text" required placeholder="השם שלך">
+          </div>
+
+          <div class="form-group">
+            <label>שם השותף/ה</label>
+            <input type="text" placeholder="שם הזוג שלך (אם יש)">
+          </div>
+
+          <div class="form-group">
+            <label>טלפון</label>
+            <input type="tel" required placeholder="050-0000000">
+          </div>
+
+          <div class="form-group">
+            <label>רמת ניסיון</label>
+            <select required>
+              <option value="" disabled selected>בחרו רמה</option>
+              <option>מתחיל — פחות מחצי שנה</option>
+              <option>חובב — חצי שנה עד שנה</option>
+              <option>בינוני — שנה-שנתיים</option>
+              <option>מתקדם — 2+ שנים</option>
+              <option>מקצועי — תחרותי</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>זמינות למשחקים</label>
+            <textarea placeholder="ציינו ימים ושעות שנוחים לכם"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>הערות נוספות</label>
+            <textarea placeholder="משהו שנרצה לדעת?" style="min-height:60px;"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-gold" style="width:100%; justify-content:center; margin-top:8px;">שלחו הרשמה</button>
+        </form>
+      </div>
+
+      <!-- FAQ -->
+      <div style="margin-top:80px;">
+        <h2 class="section-title" style="text-align:center; margin-bottom:40px;">שאלות <span>נפוצות</span></h2>
+
+        <div class="faq-list reveal">
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>כמה עולה להשתתף בליגה?</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              <p>העלות משתנה לפי העונה ומכסה שריון מגרשים. פרטים מלאים יישלחו לאחר ההרשמה.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>אפשר להירשם בלי זוג?</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              <p>כן! אנחנו נעזור לכם למצוא שותף ברמה מתאימה.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>כמה משחקים בשבוע?</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              <p>בדרך כלל משחק אחד בשבוע. המשחקים נקבעים מראש לפי הזמינות שלכם.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>מתי מתחילה העונה הבאה?</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              <p>העונות מתחילות בדרך כלל מדי כמה חודשים. עקבו אחרינו ברשתות לעדכונים.</p>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">
+              <span>אני מתחיל לגמרי — זה בשבילי?</span>
+              <span class="arrow">▼</span>
+            </div>
+            <div class="faq-answer">
+              <p>בהחלט! דרגה D פתוחה לכולם ללא סף כניסה. זו הדרך הטובה ביותר להתחיל ולהתקדם.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">ליגת הפאדל ב״ש</div>
+          <p class="footer-desc">הליגה המובילה בדרום. תחרות ברמה גבוהה, קהילה חזקה והזדמנות להתפתח בכל משחק.</p>
+        </div>
+        <div class="footer-links">
+          <h4>ניווט מהיר</h4>
+          <a href="index.html">בית</a>
+          <a href="about.html">אודות</a>
+          <a href="league-standings.html">דירוג ליגה</a>
+          <a href="rankings.html">דירוג סבב</a>
+          <a href="rules.html">תקנון</a>
+          <a href="register.html">הרשמה</a>
+        </div>
+        <div class="footer-links">
+          <h4>עקבו אחרינו</h4>
+          <div class="footer-social">
+            <a href="#" aria-label="אינסטגרם">📷</a>
+            <a href="#" aria-label="וואטסאפ">💬</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 ליגת הפאדל באר שבע. כל הזכויות שמורות.</div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
