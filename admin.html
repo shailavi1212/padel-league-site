@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול - ליגת הפאדל באר שבע</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ---- Admin-specific styles ---- */
+    .admin-wrap {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: calc(var(--nav-height) + 32px) 48px 64px;
+    }
+
+    /* Login */
+    .login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+    }
+    .login-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+    .login-box h2 {
+      font-family: var(--font-body);
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 24px;
+      font-size: 1.5rem;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+    .login-box input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .login-error {
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      display: none;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: var(--bg-deep);
+    }
+    .btn-gold:hover { background: var(--gold-light); }
+    .btn-danger {
+      background: #c0392b;
+      color: #fff;
+    }
+    .btn-danger:hover { background: #e74c3c; }
+    .btn-secondary {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--gold); }
+    .btn-sm {
+      padding: 6px 14px;
+      font-size: 0.8rem;
+    }
+
+    /* Section titles */
+    .admin-section-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Input row */
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .input-row input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+    }
+    .input-row input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 24px;
+      font-size: 0.9rem;
+      z-index: 9999;
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.success { border-color: #27ae60; }
+    .toast.error { border-color: #e74c3c; }
+
+    /* League cards */
+    .league-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .league-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      transition: var(--transition);
+    }
+    .league-card-header:hover {
+      background: var(--bg-secondary);
+    }
+    .league-card-header .arrow {
+      color: var(--gold);
+      transition: transform 0.3s ease;
+      font-size: 0.8rem;
+    }
+    .league-card-header.open .arrow {
+      transform: rotate(90deg);
+    }
+    .league-card-header .league-name {
+      flex: 1;
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .league-card-body {
+      display: none;
+      padding: 0 20px 20px;
+    }
+    .league-card-body.open {
+      display: block;
+    }
+
+    /* Sub-sections inside league card */
+    .sub-section {
+      margin-top: 20px;
+    }
+    .sub-section h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+    }
+
+    /* Pairs list */
+    .pair-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      margin-bottom: 6px;
+    }
+
+    /* Tables */
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+    .admin-table th {
+      background: var(--bg-secondary);
+      color: var(--gold);
+      font-weight: 600;
+      padding: 10px 8px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .admin-table td {
+      padding: 8px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .admin-table td:first-child {
+      text-align: right;
+      font-weight: 600;
+    }
+    .admin-table input[type="number"] {
+      width: 52px;
+      padding: 4px;
+      text-align: center;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+    }
+    .admin-table input[type="number"]:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    /* Fixture blocks */
+    .fixture-block {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+    .fixture-block h5 {
+      color: var(--gold);
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+    .match-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .match-row:last-child { border-bottom: none; }
+    .match-teams {
+      flex: 1;
+      min-width: 200px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    .match-scores {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+    }
+    .match-scores label {
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+    }
+    .match-scores input[type="number"] {
+      width: 44px;
+      padding: 4px;
+      text-align: center;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+    }
+    .match-scores input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    /* Broadcast section */
+    .broadcast-ctrl {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .broadcast-ctrl .full-row {
+      grid-column: 1 / -1;
+    }
+    .broadcast-ctrl label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .broadcast-ctrl input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+    }
+    .broadcast-ctrl input:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+    .score-ctrl-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .score-ctrl-box {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: 12px;
+    }
+    .score-ctrl-box h5 {
+      color: var(--gold);
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    .score-btn-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.85rem;
+    }
+    .score-btn-row span { min-width: 60px; }
+    .score-btn-row .val {
+      font-weight: 700;
+      color: var(--text-bright);
+      min-width: 30px;
+      text-align: center;
+    }
+    .score-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+    .score-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .serve-toggle {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .serve-toggle .btn.active {
+      background: var(--gold);
+      color: var(--bg-deep);
+    }
+
+    /* Tabs inside admin */
+    .admin-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--border);
+    }
+    .admin-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: var(--transition);
+    }
+    .admin-tab:hover {
+      color: var(--text-primary);
+    }
+    .admin-tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .admin-wrap { padding-left: 16px; padding-right: 16px; }
+      .broadcast-ctrl { grid-template-columns: 1fr; }
+      .score-ctrl-grid { grid-template-columns: 1fr; }
+      .input-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== NAVBAR ====== -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">ליגת הפאדל ב״ש</div>
+      <div class="nav-links">
+        <a href="index.html">בית</a>
+        <a href="about.html">אודות</a>
+        <a href="league.html">הליגה</a>
+        <a href="rankings.html">דירוג סבב</a>
+        <a href="rules.html">תקנון</a>
+        <a href="register.html">הרשמה</a>
+        <a href="admin.html" class="active">ניהול</a>
+      </div>
+      <button class="menu-toggle" aria-label="תפריט">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ====== LOGIN SCREEN ====== -->
+  <div id="loginScreen" class="login-screen">
+    <div class="login-box">
+      <h2>כניסת מנהל</h2>
+      <input type="password" id="passwordInput" placeholder="הזן סיסמה" autocomplete="off">
+      <div class="login-error" id="loginError">סיסמה שגויה</div>
+      <button class="btn btn-gold" style="width:100%" onclick="tryLogin()">כניסה</button>
+    </div>
+  </div>
+
+  <!-- ====== ADMIN PANEL ====== -->
+  <div id="adminPanel" class="admin-wrap" style="display:none;">
+
+    <!-- Top-level tabs -->
+    <div class="admin-tabs">
+      <div class="admin-tab active" data-tab="leagues">ניהול ליגות</div>
+      <div class="admin-tab" data-tab="broadcast">שידור חי</div>
+    </div>
+
+    <!-- === Tab: Leagues === -->
+    <div id="tab-leagues" class="tab-content active">
+      <div class="admin-section-title">יצירת ליגה חדשה</div>
+      <div class="input-row">
+        <input type="text" id="newLeagueName" placeholder='שם הליגה (למשל: ליגה A - אליטה)'>
+        <button class="btn btn-gold" onclick="createLeague()">צור ליגה</button>
+      </div>
+      <div class="admin-section-title" style="margin-top:28px;">ליגות קיימות</div>
+      <div id="leaguesList"></div>
+    </div>
+
+    <!-- === Tab: Broadcast === -->
+    <div id="tab-broadcast" class="tab-content">
+      <div class="admin-section-title">בקרת שידור חי</div>
+      <div class="broadcast-ctrl">
+        <div class="full-row">
+          <label>קישור YouTube</label>
+          <input type="text" id="bcStreamURL" placeholder="https://youtube.com/live/...">
+        </div>
+        <div>
+          <label>שם קבוצה A</label>
+          <input type="text" id="bcTeamA" placeholder="קבוצה A">
+        </div>
+        <div>
+          <label>שם קבוצה B</label>
+          <input type="text" id="bcTeamB" placeholder="קבוצה B">
+        </div>
+        <div>
+          <label>שחקני קבוצה A</label>
+          <input type="text" id="bcPlayersA" placeholder="שחקן 1, שחקן 2">
+        </div>
+        <div>
+          <label>שחקני קבוצה B</label>
+          <input type="text" id="bcPlayersB" placeholder="שחקן 1, שחקן 2">
+        </div>
+        <div class="full-row" style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn btn-gold" onclick="saveBroadcastInfo()">שמור פרטי משחק</button>
+          <button class="btn btn-danger" onclick="resetBroadcast()">אפס שידור</button>
+        </div>
+      </div>
+
+      <!-- Score Controls -->
+      <div class="score-ctrl-grid">
+        <div class="score-ctrl-box" id="scoreCtrlA">
+          <h5>קבוצה A</h5>
+          <div class="score-btn-row">
+            <span>סטים</span>
+            <button class="score-btn" onclick="adjustScore('A','sets',-1)">-</button>
+            <span class="val" id="bcSetsA">0</span>
+            <button class="score-btn" onclick="adjustScore('A','sets',1)">+</button>
+          </div>
+          <div class="score-btn-row">
+            <span>גיימים</span>
+            <button class="score-btn" onclick="adjustScore('A','score',-1)">-</button>
+            <span class="val" id="bcScoreA">0</span>
+            <button class="score-btn" onclick="adjustScore('A','score',1)">+</button>
+          </div>
+          <div class="score-btn-row">
+            <span>נקודות</span>
+            <button class="score-btn" onclick="adjustScore('A','points',-1)">-</button>
+            <span class="val" id="bcPointsA">0</span>
+            <button class="score-btn" onclick="adjustScore('A','points',1)">+</button>
+          </div>
+        </div>
+        <div class="score-ctrl-box" id="scoreCtrlB">
+          <h5>קבוצה B</h5>
+          <div class="score-btn-row">
+            <span>סטים</span>
+            <button class="score-btn" onclick="adjustScore('B','sets',-1)">-</button>
+            <span class="val" id="bcSetsB">0</span>
+            <button class="score-btn" onclick="adjustScore('B','sets',1)">+</button>
+          </div>
+          <div class="score-btn-row">
+            <span>גיימים</span>
+            <button class="score-btn" onclick="adjustScore('B','score',-1)">-</button>
+            <span class="val" id="bcScoreB">0</span>
+            <button class="score-btn" onclick="adjustScore('B','score',1)">+</button>
+          </div>
+          <div class="score-btn-row">
+            <span>נקודות</span>
+            <button class="score-btn" onclick="adjustScore('B','points',-1)">-</button>
+            <span class="val" id="bcPointsB">0</span>
+            <button class="score-btn" onclick="adjustScore('B','points',1)">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Serve toggle -->
+      <div style="margin-top:16px;">
+        <label style="font-size:0.85rem;color:var(--text-secondary);">הגשה:</label>
+        <div class="serve-toggle">
+          <button class="btn btn-secondary btn-sm" id="serveA" onclick="setServe('A')">קבוצה A</button>
+          <button class="btn btn-secondary btn-sm" id="serveB" onclick="setServe('B')">קבוצה B</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <!-- Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    // Body loaded class for opacity transition
+    document.body.classList.add('loaded');
+
+    // Mobile menu toggle (same as main site)
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    if (menuToggle) {
+      menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+        menuToggle.classList.toggle('open');
+      });
+    }
+  </script>
+</body>
+</html>

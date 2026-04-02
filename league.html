@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הליגה — ליגת הפאדל באר שבע</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .league-selector {
+      position: relative;
+      max-width: 360px;
+      margin-bottom: 32px;
+    }
+    .league-dropdown {
+      width: 100%;
+      padding: 14px 20px;
+      padding-left: 44px;
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-bright);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition);
+    }
+    .league-dropdown:hover { border-color: var(--border-light); }
+    .league-dropdown:focus { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-dim); }
+    .league-dropdown option { background: var(--bg-card); color: var(--text-primary); }
+    .league-selector::after {
+      content: '▼';
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      font-size: 12px;
+      color: var(--gold);
+      pointer-events: none;
+    }
+    .league-selector-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .no-league-msg {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--text-secondary);
+    }
+    .no-league-msg .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+    .no-league-msg p { font-size: 16px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-brand">ליגת הפאדל ב״ש</div>
+      <div class="nav-links">
+        <a href="index.html">בית</a>
+        <a href="about.html">אודות</a>
+        <a href="league.html" class="active">הליגה</a>
+        <a href="rankings.html">דירוג סבב</a>
+        <a href="rules.html">תקנון</a>
+        <a href="register.html">הרשמה</a>
+      </div>
+      <button class="menu-toggle" aria-label="תפריט">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="container">
+      <div class="section-tag">טבלאות ותוצאות</div>
+      <h1 class="section-title"><span>הליגה</span></h1>
+      <p class="section-sub" style="margin:0 auto;">בחרו את הליגה שלכם וצפו בטבלה ובלוח המשחקים.</p>
+    </div>
+  </header>
+
+  <div class="divider"></div>
+
+  <!-- LEAGUE CONTENT -->
+  <section class="section">
+    <div class="container">
+
+      <!-- League Selector Dropdown -->
+      <div class="league-selector reveal">
+        <div class="league-selector-label">בחרו ליגה</div>
+        <select class="league-dropdown" id="leagueSelect">
+          <option value="" disabled selected>טוען ליגות...</option>
+        </select>
+      </div>
+
+      <!-- No league placeholder -->
+      <div id="noLeagueMsg" class="no-league-msg" style="display:none;">
+        <div class="icon">🏓</div>
+        <p>אין ליגות זמינות כרגע.</p>
+      </div>
+
+      <!-- Standings + Schedule (hidden until league selected) -->
+      <div id="standingsSection" style="display:none;">
+
+        <!-- Standings Table -->
+        <div class="glass-panel">
+          <table class="standings-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>זוג</th>
+                <th>מש׳</th>
+                <th>נצ׳</th>
+                <th>S+</th>
+                <th>S-</th>
+                <th>SD</th>
+                <th>G+</th>
+                <th>G-</th>
+                <th>GD</th>
+              </tr>
+            </thead>
+            <tbody id="standingsBody">
+              <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+              <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+              <tr><td colspan="10"><div class="skeleton skeleton-row"></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Schedule -->
+        <div style="margin-top:64px;">
+          <div class="section-tag">לוח משחקים</div>
+          <h2 class="section-title" style="margin-bottom:24px;">תוצאות <span>ומשחקים</span></h2>
+
+          <div class="tabs" id="fixtureTabs"></div>
+
+          <div class="glass-panel" id="fixturePanel">
+            <div style="padding:24px; text-align:center; color:var(--text-secondary);">
+              בחרו ליגה כדי לראות את לוח המשחקים
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div>
+          <div class="footer-brand">ליגת הפאדל ב״ש</div>
+          <p class="footer-desc">הליגה המובילה בדרום. תחרות ברמה גבוהה, קהילה חזקה והזדמנות להתפתח בכל משחק.</p>
+        </div>
+        <div class="footer-links">
+          <h4>ניווט מהיר</h4>
+          <a href="index.html">בית</a>
+          <a href="about.html">אודות</a>
+          <a href="league.html">הליגה</a>
+          <a href="rankings.html">דירוג סבב</a>
+          <a href="rules.html">תקנון</a>
+          <a href="register.html">הרשמה</a>
+        </div>
+        <div class="footer-links">
+          <h4>עקבו אחרינו</h4>
+          <div class="footer-social">
+            <a href="#" aria-label="אינסטגרם">📷</a>
+            <a href="#" aria-label="וואטסאפ">💬</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 ליגת הפאדל באר שבע. כל הזכויות שמורות.</div>
+    </div>
+  </footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/standings.js"></script>
+</body>
+</html>

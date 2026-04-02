@@ -1,28 +1,108 @@
 /* ============================================
-   STANDINGS & SCHEDULE - league-standings.html
-   Firebase real-time data
+   STANDINGS & SCHEDULE - league.html
+   Dynamic leagues from Firebase: leagues/{id}/
    ============================================ */
 
-let standingsData = {};
-let scheduleData = {};
-let currentGroup = 'A';
+let allLeagues = {};
+let selectedLeagueId = null;
 let currentFixture = '1';
+let leagueListener = null;
+
+// ---- Load all leagues for dropdown ----
+function initLeaguePage() {
+  db.ref('leagues').on('value', (snapshot) => {
+    allLeagues = snapshot.val() || {};
+    populateDropdown();
+  });
+}
+
+// ---- Populate dropdown ----
+function populateDropdown() {
+  const select = document.getElementById('leagueSelect');
+  const noMsg = document.getElementById('noLeagueMsg');
+  const section = document.getElementById('standingsSection');
+
+  if (!select) return;
+
+  const sorted = Object.entries(allLeagues)
+    .sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+
+  if (sorted.length === 0) {
+    select.innerHTML = '<option value="" disabled selected>אין ליגות זמינות</option>';
+    if (noMsg) noMsg.style.display = 'block';
+    if (section) section.style.display = 'none';
+    return;
+  }
+
+  if (noMsg) noMsg.style.display = 'none';
+
+  // Build options
+  let html = '<option value="" disabled>בחרו ליגה...</option>';
+  sorted.forEach(([id, league]) => {
+    const isSelected = id === selectedLeagueId ? ' selected' : '';
+    html += `<option value="${id}"${isSelected}>${league.name || 'ליגה'}</option>`;
+  });
+  select.innerHTML = html;
+
+  // If we had a selection, keep it; otherwise auto-select first
+  if (!selectedLeagueId && sorted.length > 0) {
+    selectedLeagueId = sorted[0][0];
+    select.value = selectedLeagueId;
+    onLeagueSelected(selectedLeagueId);
+  } else if (selectedLeagueId) {
+    // Re-render current league (data may have changed)
+    renderStandings();
+    renderFixtureTabs();
+    renderFixtures();
+  }
+}
+
+// ---- Dropdown change handler ----
+document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('leagueSelect');
+  if (select) {
+    select.addEventListener('change', (e) => {
+      onLeagueSelected(e.target.value);
+    });
+  }
+});
+
+function onLeagueSelected(leagueId) {
+  selectedLeagueId = leagueId;
+  currentFixture = '1';
+
+  const section = document.getElementById('standingsSection');
+  if (section) section.style.display = 'block';
+
+  // Attach real-time listener for this specific league
+  if (leagueListener) {
+    db.ref('leagues/' + leagueListener).off();
+  }
+  leagueListener = leagueId;
+
+  db.ref('leagues/' + leagueId).on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      allLeagues[leagueId] = data;
+    }
+    renderStandings();
+    renderFixtureTabs();
+    renderFixtures();
+  });
+}
 
 // ---- Render Standings Table ----
 function renderStandings() {
   const tbody = document.getElementById('standingsBody');
-  if (!tbody) return;
+  if (!tbody || !selectedLeagueId) return;
 
-  const groupKey = `group${currentGroup}`;
-  const groupData = standingsData[groupKey];
-
-  if (!groupData) {
-    tbody.innerHTML = '<tr><td colspan="10" style="padding:32px; text-align:center; color:var(--text-secondary);">אין נתונים זמינים</td></tr>';
+  const league = allLeagues[selectedLeagueId];
+  if (!league || !league.standings) {
+    tbody.innerHTML = '<tr><td colspan="10" style="padding:32px; text-align:center; color:var(--text-secondary);">אין נתונים זמינים עדיין</td></tr>';
     return;
   }
 
-  // Convert to array and sort
-  const teams = Object.entries(groupData).map(([key, t]) => ({
+  const teams = Object.entries(league.standings).map(([key, t]) => ({
     name: t.name || key,
     p: t.p || 0,
     w: t.w || 0,
@@ -32,11 +112,11 @@ function renderStandings() {
     gMinus: t.gMinus || 0
   }));
 
+  // Sort: wins → set diff → game diff
   teams.sort((a, b) => {
     if (b.w !== a.w) return b.w - a.w;
-    const sdA = a.sPlus - a.sMinus;
-    const sdB = b.sPlus - b.sMinus;
-    if (sdB !== sdA) return sdB - sdA;
+    const sdDiff = (b.sPlus - b.sMinus) - (a.sPlus - a.sMinus);
+    if (sdDiff !== 0) return sdDiff;
     return (b.gPlus - b.gMinus) - (a.gPlus - a.gMinus);
   });
 
@@ -52,7 +132,7 @@ function renderStandings() {
     return `
       <tr style="animation: fadeInUp 0.4s ease ${i * 0.05}s backwards;">
         <td><span class="rank ${rankClass}">${rankDisplay}</span></td>
-        <td>${t.name}</td>
+        <td>${escHtml(t.name)}</td>
         <td>${t.p}</td>
         <td><span class="wins">${t.w}</span></td>
         <td>${t.sPlus}</td>
@@ -66,27 +146,63 @@ function renderStandings() {
   }).join('');
 }
 
+// ---- Render Fixture Tabs dynamically ----
+function renderFixtureTabs() {
+  const container = document.getElementById('fixtureTabs');
+  if (!container || !selectedLeagueId) return;
+
+  const league = allLeagues[selectedLeagueId];
+  const schedule = league?.schedule || {};
+  const fixtureKeys = Object.keys(schedule).sort((a, b) => {
+    const numA = parseInt(a.replace('fixture', '')) || 0;
+    const numB = parseInt(b.replace('fixture', '')) || 0;
+    return numA - numB;
+  });
+
+  if (fixtureKeys.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = fixtureKeys.map(key => {
+    const num = key.replace('fixture', '');
+    const isActive = num === currentFixture ? ' active' : '';
+    return `<button class="tab-btn${isActive}" data-tab="${num}">מחזור ${num}</button>`;
+  }).join('');
+
+  // Attach click handlers
+  container.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentFixture = btn.getAttribute('data-tab');
+      renderFixtures();
+    });
+  });
+}
+
 // ---- Render Fixtures ----
 function renderFixtures() {
   const panel = document.getElementById('fixturePanel');
-  if (!panel) return;
+  if (!panel || !selectedLeagueId) return;
 
-  const groupKey = `group${currentGroup}`;
-  const groupSchedule = scheduleData[groupKey];
-  const fixtureKey = `fixture${currentFixture}`;
+  const league = allLeagues[selectedLeagueId];
+  const schedule = league?.schedule || {};
+  const fixtureKey = 'fixture' + currentFixture;
+  const fixture = schedule[fixtureKey];
 
-  if (!groupSchedule || !groupSchedule[fixtureKey]) {
+  if (!fixture) {
     panel.innerHTML = '<div style="padding:32px; text-align:center; color:var(--text-secondary);">אין משחקים במחזור זה</div>';
     return;
   }
 
-  const matches = groupSchedule[fixtureKey];
   const months = ['ינו׳', 'פבר׳', 'מרץ', 'אפר׳', 'מאי', 'יוני', 'יולי', 'אוג׳', 'ספט׳', 'אוק׳', 'נוב׳', 'דצמ׳'];
 
   let html = '';
+  const matches = Object.values(fixture);
 
-  Object.values(matches).forEach(match => {
-    // Date formatting
+  matches.forEach(match => {
+    // Date
     let dateStr = '';
     if (match.date) {
       try {
@@ -98,72 +214,33 @@ function renderFixtures() {
       }
     }
 
-    const hasScore = match.scoreA !== undefined && match.scoreB !== undefined;
+    const hasScore = match.scoreA != null && match.scoreB != null;
     const scoreDisplay = hasScore
-      ? `<span>${match.scoreA} – ${match.scoreB}</span>`
-      : '<span>vs</span>';
+      ? `${match.scoreA} – ${match.scoreB}`
+      : 'vs';
     const scoreClass = hasScore ? '' : 'pending';
 
     html += `
       ${dateStr ? `<div class="fixture-date">${dateStr}</div>` : ''}
       <div class="fixture-card">
-        <div class="fixture-team">${match.teamA || '—'}</div>
+        <div class="fixture-team">${escHtml(match.teamA || '—')}</div>
         <div class="fixture-score ${scoreClass}">${scoreDisplay}</div>
-        <div class="fixture-team away">${match.teamB || '—'}</div>
+        <div class="fixture-team away">${escHtml(match.teamB || '—')}</div>
       </div>
     `;
   });
 
-  panel.innerHTML = html;
+  panel.innerHTML = html || '<div style="padding:32px; text-align:center; color:var(--text-secondary);">אין משחקים</div>';
 }
 
-// ---- Tab Event Listeners ----
-function initStandingsTabs() {
-  // Group tabs
-  const standingsTabs = document.getElementById('standingsTabs');
-  if (standingsTabs) {
-    standingsTabs.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        standingsTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentGroup = btn.getAttribute('data-group');
-        renderStandings();
-        renderFixtures();
-      });
-    });
-  }
-
-  // Fixture tabs
-  const fixtureTabs = document.getElementById('fixtureTabs');
-  if (fixtureTabs) {
-    fixtureTabs.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        fixtureTabs.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFixture = btn.getAttribute('data-tab');
-        renderFixtures();
-      });
-    });
-  }
+// ---- Utility ----
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
-// ---- Firebase Listeners ----
-function initStandingsData() {
-  // Standings
-  db.ref('standings').on('value', (snapshot) => {
-    standingsData = snapshot.val() || {};
-    renderStandings();
-  });
-
-  // Schedule
-  db.ref('schedule').on('value', (snapshot) => {
-    scheduleData = snapshot.val() || {};
-    renderFixtures();
-  });
-}
-
-// Initialize
-initStandingsTabs();
+// ---- Initialize ----
 if (typeof db !== 'undefined') {
-  initStandingsData();
+  initLeaguePage();
 }
