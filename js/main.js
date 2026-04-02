@@ -132,18 +132,17 @@ document.querySelectorAll('a[href]').forEach(link => {
   if (href && href.endsWith('.html') && !href.startsWith('http')) {
     link.addEventListener('click', (e) => {
       e.preventDefault();
-      document.body.style.opacity = '0';
-      document.body.style.transition = 'opacity 0.2s ease';
+      document.body.classList.remove('loaded');
       setTimeout(() => {
         window.location.href = href;
-      }, 200);
+      }, 250);
     });
   }
 });
 
 // Fade in on page load
-window.addEventListener('load', () => {
-  document.body.style.opacity = '1';
-  document.body.style.transition = 'opacity 0.3s ease';
+window.addEventListener('DOMContentLoaded', () => {
+  requestAnimationFrame(() => {
+    document.body.classList.add('loaded');
+  });
 });
-document.body.style.opacity = '0';

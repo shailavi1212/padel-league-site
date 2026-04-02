@@ -83,6 +83,16 @@ img {
   display: block;
 }
 
+/* ---------- Page Load Transition ---------- */
+body {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+body.loaded {
+  opacity: 1;
+}
+
 /* ---------- Utility ---------- */
 .container {
   max-width: var(--max-width);
